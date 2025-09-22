@@ -1,26 +1,28 @@
-// netlify/functions/proxy.js
-import axios from 'axios';
+import axios from 'axios'
 
 export async function handler(event, context) {
-  const endpoint = event.queryStringParameters.endpoint;
-  const token = process.env.VITE_API_KEY || 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie';
-
-  // Собираем все остальные параметры
-  const params = { ...event.queryStringParameters };
-  delete params.endpoint; // убираем endpoint из query params
-  params.key = token;
-  params.limit = Math.min(params.limit || 500, 500);
-
   try {
-    const response = await axios.get(`http://109.73.206.144:6969/api/${endpoint}`, { params });
+    // Читаем query-параметры
+    const query = event.queryStringParameters || {}
+    
+    // Вставляем API ключ
+    const key = process.env.VITE_API_KEY || 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie'
+    
+    // Формируем URL для настоящего API
+    const url = `http://109.73.206.144:6969/api${query.endpoint ? '/' + query.endpoint : ''}`
+    
+    const params = { ...query, key, limit: Math.min(query.limit || 500, 500) }
+    
+    const response = await axios.get(url, { params })
+    
     return {
       statusCode: 200,
       body: JSON.stringify(response.data)
-    };
+    }
   } catch (err) {
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to fetch data', details: err.message })
-    };
+      statusCode: err.response?.status || 500,
+      body: JSON.stringify({ error: err.message })
+    }
   }
 }

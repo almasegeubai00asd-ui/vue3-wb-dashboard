@@ -1,18 +1,13 @@
-import axios from 'axios';
+import axios from 'axios'
 
 const client = axios.create({
-  baseURL: '/.netlify/functions/proxy', // <-- сюда обращаемся
-  timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  baseURL: '/.netlify/functions/api-proxy', // <-- теперь все запросы идут на функцию
+  timeout: 15000
 })
 
 export async function fetchEndpoint(endpoint, params = {}) {
-  const response = await client.get('', {
-    params: { endpoint, ...params } // endpoint передаем как query param
-  });
-  return response.data;
+  const response = await client.get('', { params: { ...params, endpoint } })
+  return response.data
 }
 
-export default client;
+export default client

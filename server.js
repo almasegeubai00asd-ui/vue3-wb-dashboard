@@ -1,21 +1,20 @@
 import express from 'express'
 import path from 'path'
-import proxy from './api/proxy.js'
+import proxyRouter from './proxy.js'
 
 const app = express()
-const PORT = process.env.PORT || 3000
 
-// Статика Vue (dist) — без /api
+// Фронтенд статика
 app.use(express.static(path.join(process.cwd(), 'dist')))
 
-// Для POST/PUT (если нужно)
-app.use(express.json())
+// Прокси для API
+app.use('/api', proxyRouter)
 
-// SPA fallback: все остальные маршруты → index.html
+// Все остальное отдаём фронтенду
 app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'dist', 'index.html'))
+  res.sendFile(path.join(process.cwd(), 'dist/index.html'))
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Server started')
 })

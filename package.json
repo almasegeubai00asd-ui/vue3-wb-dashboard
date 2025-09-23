@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-  "dev": "npx vite",
-  "build": "npx vite build",
-  "start": "node server.js",
-  "preview": "npx vite preview"
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node server.js",
+    "preview": "vite preview"
   },
   "engines": {
     "node": "20.x"
@@ -15,11 +15,9 @@
     "axios": "^1.12.2",
     "express": "^4.21.2",
     "node-fetch": "^3.3.2",
+    "vue": "^3.3.4",
+    "vite": "^5.4.20",
     "vue-router": "^4.3.7",
     "pinia": "^2.3.1"
-  },
-  "devDependencies": {
-    "vite": "^5.4.20",
-    "vue": "^3.3.4"
   }
 }

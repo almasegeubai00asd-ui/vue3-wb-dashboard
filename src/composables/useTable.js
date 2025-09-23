@@ -1,3 +1,4 @@
+// src/composables/useTable.js
 import { ref, computed } from 'vue'
 import { fetchEndpoint } from '../api/client'
 
@@ -18,6 +19,7 @@ export function useTable(endpoint, defaultLimit = 10) {
       const params = {
         page: page.value,
         limit: limit.value,
+        // Если нет фильтров по дате — подставляем сегодня
         dateFrom: filters.value.dateFrom || today,
         dateTo: filters.value.dateTo || today,
         ...filters.value

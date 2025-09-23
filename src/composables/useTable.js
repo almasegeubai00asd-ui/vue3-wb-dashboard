@@ -16,14 +16,13 @@ export function useTable(endpoint, defaultLimit = 10) {
       const today = new Date().toISOString().split('T')[0]
 
       // Обязательные параметры для внешнего API
-      const params = {
-        page: page.value,
-        limit: limit.value,
-        // Если нет фильтров по дате — подставляем сегодня
-        dateFrom: filters.value.dateFrom || today,
-        dateTo: filters.value.dateTo || today,
-        ...filters.value
-      }
+const params = {
+  page: page.value,
+  limit: limit.value,
+  dateFrom: filters.value.dateFrom || new Date().toISOString().split('T')[0],
+  dateTo: filters.value.dateTo || new Date().toISOString().split('T')[0],
+  ...filters.value
+}
 
       console.log(`[useTable] Fetching ${endpoint} with params:`, params)
 

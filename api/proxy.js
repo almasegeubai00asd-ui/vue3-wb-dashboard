@@ -1,45 +1,32 @@
 // api/proxy.js
-import fetch from 'node-fetch'
+import express from 'express'
+import axios from 'axios'
 
-export default async function handler(req, res) {
+const router = express.Router()
+
+// Базовый URL твоего внешнего API
+const BASE_URL = 'http://109.73.206.144:6969'
+
+// API-ключ
+const API_KEY = process.env.VITE_API_KEY || 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie'
+
+router.use(async (req, res) => {
   try {
-    const BACKEND = process.env.BACKEND_URL || 'http://109.73.206.144:6969'
-    
-    // Берём путь запроса после /api
-    const path = req.url.replace(/^\/api/, '') || '/'
+    const url = `${BASE_URL}${req.path}`
 
-    // Формируем URL на backend
-    const url = new URL(BACKEND + '/api' + path)
+    // Пробрасываем все query-параметры + добавляем ключ
+    const params = { ...req.query, key: API_KEY }
 
-    // Добавляем query параметры из запроса + ключ
-    const params = new URLSearchParams(req.query)
-    if (!params.has('key')) {
-      params.set('key', process.env.VITE_API_KEY || '')
-    }
-    url.search = params.toString()
-
-    // Настраиваем fetch
-    const init = {
-      method: req.method,
-      headers: { ...req.headers },
-    }
-
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-      init.body = JSON.stringify(req.body || {})
-      init.headers['content-type'] = req.headers['content-type'] || 'application/json'
-    }
-
-    // Отправляем запрос на backend
-    const proxied = await fetch(url.toString(), init)
-    const text = await proxied.text()
-
-    // Пробрасываем заголовки и статус
-    proxied.headers.forEach((value, key) => res.setHeader(key, value))
-    res.statusCode = proxied.status
-    res.end(text)
+    // GET-запрос к реальному API
+    const response = await axios.get(url, { params })
+    res.json(response.data)
   } catch (err) {
-    res.statusCode = 500
-    res.setHeader('content-type', 'application/json')
-    res.end(JSON.stringify({ error: err.message }))
+    console.error('Proxy error:', err.message)
+    res.status(err.response?.status || 500).json({
+      error: err.message,
+      data: err.response?.data || null
+    })
   }
-}
+})
+
+export default router

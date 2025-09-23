@@ -14,7 +14,8 @@ router.use(async (req, res) => {
   try {
     const url = `${BASE_URL}${req.path}` // /incomes, /orders и т.д.
     const params = { ...req.query, key: API_KEY }
-
+    console.log('[Proxy] URL:', url)
+    console.log('[Proxy] params:', params)
     console.log('[Proxy] GET', url, 'Params:', params)
 
     const response = await axios.get(url, { params })

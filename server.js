@@ -11,9 +11,6 @@ app.use(express.static(path.join(process.cwd(), 'dist')))
 // Для POST/PUT (если нужно)
 app.use(express.json())
 
-// Прокси для /api/* → внешний API
-app.use('/api', proxy)
-
 // SPA fallback: все остальные маршруты → index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'))

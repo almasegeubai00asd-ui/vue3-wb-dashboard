@@ -27,7 +27,6 @@ export function useTable(endpoint, defaultLimit = 10) {
       const data = await fetchEndpoint(endpoint, params)
       console.log('Response data:', data)
 
-      // Берем rows
       if (Array.isArray(data)) {
         rows.value = data
         total.value = data.length
@@ -38,7 +37,6 @@ export function useTable(endpoint, defaultLimit = 10) {
         rows.value = data.rows || data.items || []
         total.value = data.total ?? rows.value.length
       }
-
     } catch (err) {
       console.error('Error loading table:', err)
       rows.value = []
@@ -48,10 +46,8 @@ export function useTable(endpoint, defaultLimit = 10) {
     }
   }
 
-  // Вычисляем количество страниц
   const pages = computed(() => Math.max(1, Math.ceil(total.value / limit.value)))
 
-  // Функции управления
   function setPage(p) {
     if (p < 1) p = 1
     if (p > pages.value) p = pages.value

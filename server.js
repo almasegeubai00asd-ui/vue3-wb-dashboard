@@ -14,6 +14,8 @@ app.use(express.json())
 // Проксируем все запросы /api → внешний API через proxy.js
 app.use('/api', proxy)
 
+app.use(express.static(path.join(process.cwd(), 'dist')))
+
 // SPA fallback: все остальные маршруты → index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'))

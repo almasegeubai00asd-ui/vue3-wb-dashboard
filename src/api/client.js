@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-// Таймаут запросов
+// Таймаут запросов (берётся из .env или Render)
 const DEFAULT_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 15000
-// Базовый URL всегда берём из .env (напрямую на backend)
-const DEFAULT_BASE =
-  import.meta.env.VITE_API_BASE || 'https://your-backend.onrender.com'
+
+// Базовый URL — теперь всегда через наш прокси /api
+const DEFAULT_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 // Создаём экземпляр axios
 const client = axios.create({
@@ -15,7 +15,7 @@ const client = axios.create({
   },
 })
 
-// Перехватчик запросов (добавляем ключ, если есть)
+// Перехватчик запросов: добавляем API ключ, если он есть
 client.interceptors.request.use(
   (cfg) => {
     const token = import.meta.env.VITE_API_KEY
@@ -28,7 +28,7 @@ client.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Перехватчик ответов (нормализуем ошибки)
+// Перехватчик ответов: нормализуем ошибки
 client.interceptors.response.use(
   (res) => res,
   (error) => {

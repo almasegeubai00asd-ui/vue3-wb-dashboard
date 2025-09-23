@@ -8,10 +8,10 @@ const PORT = process.env.PORT || 3000
 // Раздаём статические файлы из dist
 app.use(express.static(path.join(process.cwd(), 'dist')))
 
-// Для POST/PUT
+// Для POST/PUT (если понадобится)
 app.use(express.json())
 
-// Проксируем все GET-запросы /api → внешний API
+// Проксируем все запросы /api → внешний API через proxy.js
 app.use('/api', proxy)
 
 // SPA fallback: все остальные маршруты → index.html

@@ -1,4 +1,3 @@
-// src/composables/useTable.js
 import { ref, computed } from 'vue'
 import { fetchEndpoint } from '../api/client'
 
@@ -14,8 +13,8 @@ export function useTable(endpoint, defaultLimit = 10) {
     loading.value = true
     try {
       const params = { page: page.value, limit: limit.value, ...filters.value }
-
       const today = new Date().toISOString().split('T')[0]
+
       if (endpoint !== 'stocks') {
         if (!params.dateFrom) params.dateFrom = today
         if (!params.dateTo) params.dateTo = today
@@ -23,9 +22,7 @@ export function useTable(endpoint, defaultLimit = 10) {
         if (!params.dateFrom) params.dateFrom = today
       }
 
-      console.log(`Fetching ${endpoint} with params:`, params)
       const data = await fetchEndpoint(endpoint, params)
-      console.log('Response data:', data)
 
       if (Array.isArray(data)) {
         rows.value = data

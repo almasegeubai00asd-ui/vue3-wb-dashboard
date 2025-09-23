@@ -14,7 +14,6 @@ export function useTable(endpoint, defaultLimit = 10) {
     try {
       const today = new Date().toISOString().split('T')[0]
 
-      // Обязательные параметры для внешнего API
       const params = {
         page: page.value,
         limit: limit.value,

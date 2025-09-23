@@ -5,13 +5,16 @@ import proxy from './api/proxy.js'
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// Раздаём статику
+// Статика Vue (dist) — без /api
 app.use(express.static(path.join(process.cwd(), 'dist')))
 
-// Проксируем /api → внешний API
+// Для POST/PUT (если нужно)
+app.use(express.json())
+
+// Прокси для /api/* → внешний API
 app.use('/api', proxy)
 
-// SPA fallback
+// SPA fallback: все остальные маршруты → index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'))
 })

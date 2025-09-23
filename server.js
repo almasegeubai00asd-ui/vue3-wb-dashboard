@@ -11,7 +11,7 @@ app.use(express.static(path.join(process.cwd(), 'dist')))
 // Для POST/PUT
 app.use(express.json())
 
-// Проксируем /api → BACKEND_URL
+// Проксируем все GET-запросы /api → внешний API
 app.use('/api', proxy)
 
 // SPA fallback: все остальные маршруты → index.html

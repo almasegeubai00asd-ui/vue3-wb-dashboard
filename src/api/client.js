@@ -4,7 +4,7 @@ import axios from 'axios'
 // Таймаут запроса в миллисекундах, берется из .env или 15000 по умолчанию
 const DEFAULT_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 15000
 
-// Базовый URL API, берется из .env или /api по умолчанию
+// Базовый URL API, по умолчанию прокси на /api
 const DEFAULT_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 // Создаем экземпляр Axios
@@ -14,20 +14,14 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Интерцептор запросов — добавляет ключ API из .env
+// Интерцептор запросов — удаляем добавление ключа на фронте
+// (ключ добавляется только на сервере через proxy.js)
 client.interceptors.request.use(
-  cfg => {
-    const token = import.meta.env.VITE_API_KEY
-    if (token) {
-      if (!cfg.params) cfg.params = {}
-      cfg.params.key = cfg.params.key || token
-    }
-    return cfg
-  },
+  cfg => cfg,
   error => Promise.reject(error)
 )
 
-// Интерцептор ответов — обрабатывает ошибки
+// Интерцептор ответов — обрабатываем ошибки
 client.interceptors.response.use(
   res => res,
   error => {
@@ -54,7 +48,7 @@ export async function fetchEndpoint(endpoint, params = {}, opts = {}) {
 
   try {
     const response = await client.get(path, { params: { ...params, limit }, ...opts })
-    return response.data !== undefined ? response.data : response
+    return response.data
   } catch (err) {
     console.error('fetchEndpoint error:', err.status || err.message || err)
     throw err

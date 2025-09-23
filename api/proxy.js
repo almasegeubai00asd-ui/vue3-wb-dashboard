@@ -7,11 +7,13 @@ const router = express.Router()
 // Базовый URL твоего внешнего API
 const BASE_URL = 'http://109.73.206.144:6969'
 
-// API-ключ
+// API-ключ (можно вынести в .env)
 const API_KEY = process.env.VITE_API_KEY || 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie'
 
-router.use(async (req, res) => {
+// Любой GET-запрос на /api/... будет проксироваться
+router.get('/*', async (req, res) => {
   try {
+    // Формируем полный URL для внешнего API
     const url = `${BASE_URL}${req.path}`
 
     // Пробрасываем все query-параметры + добавляем ключ
@@ -19,6 +21,8 @@ router.use(async (req, res) => {
 
     // GET-запрос к реальному API
     const response = await axios.get(url, { params })
+
+    // Возвращаем результат клиенту
     res.json(response.data)
   } catch (err) {
     console.error('Proxy error:', err.message)

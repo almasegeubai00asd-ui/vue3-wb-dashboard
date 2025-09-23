@@ -4,7 +4,7 @@ import axios from 'axios'
 const router = express.Router()
 
 // Базовый URL внешнего API
-const BASE_URL = 'http://109.73.206.144:6969/api'
+const BASE_URL = 'http://109.73.206.144:6969'
 
 // API-ключ
 const API_KEY = process.env.VITE_API_KEY || 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie'

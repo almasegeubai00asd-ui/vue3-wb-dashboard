@@ -12,15 +12,18 @@ export function useTable(endpoint, defaultLimit = 10) {
   async function load() {
     loading.value = true
     try {
-      const params = { page: page.value, limit: limit.value, ...filters.value }
       const today = new Date().toISOString().split('T')[0]
 
-      if (endpoint !== 'stocks') {
-        if (!params.dateFrom) params.dateFrom = today
-        if (!params.dateTo) params.dateTo = today
-      } else {
-        if (!params.dateFrom) params.dateFrom = today
+      // Обязательные параметры для внешнего API
+      const params = {
+        page: page.value,
+        limit: limit.value,
+        dateFrom: filters.value.dateFrom || today,
+        dateTo: filters.value.dateTo || today,
+        ...filters.value
       }
+
+      console.log(`[useTable] Fetching ${endpoint} with params:`, params)
 
       const data = await fetchEndpoint(endpoint, params)
 
@@ -35,7 +38,7 @@ export function useTable(endpoint, defaultLimit = 10) {
         total.value = data.total ?? rows.value.length
       }
     } catch (err) {
-      console.error('Error loading table:', err)
+      console.error('[useTable] Error loading table:', err)
       rows.value = []
       total.value = 0
     } finally {

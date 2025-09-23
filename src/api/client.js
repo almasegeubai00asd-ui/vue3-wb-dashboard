@@ -1,6 +1,9 @@
 import axios from 'axios'
 
+// Таймаут запроса
 const DEFAULT_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 15000
+
+// Базовый URL для фронтенда — /api, чтобы шёл через Node-прокси
 const DEFAULT_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 const client = axios.create({
@@ -9,7 +12,15 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-client.interceptors.request.use(cfg => cfg, error => Promise.reject(error))
+// Добавляем ключ API в запросы
+client.interceptors.request.use(cfg => {
+  const token = import.meta.env.VITE_API_KEY
+  if (token) {
+    if (!cfg.params) cfg.params = {}
+    cfg.params.key = cfg.params.key || token
+  }
+  return cfg
+}, error => Promise.reject(error))
 
 client.interceptors.response.use(
   res => res,
@@ -24,13 +35,16 @@ client.interceptors.response.use(
   }
 )
 
+/**
+ * Универсальная функция для вызова API
+ */
 export async function fetchEndpoint(endpoint, params = {}, opts = {}) {
   const limit = Math.min(params.limit || 500, 500)
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
 
   try {
     const response = await client.get(path, { params: { ...params, limit }, ...opts })
-    return response.data
+    return response.data !== undefined ? response.data : response
   } catch (err) {
     console.error('fetchEndpoint error:', err.status || err.message || err)
     throw err

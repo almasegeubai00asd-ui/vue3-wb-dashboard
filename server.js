@@ -5,16 +5,14 @@ import proxy from './api/proxy.js'
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// Раздаём статические файлы из dist
+// Раздаём статические файлы из dist (без /api!)
 app.use(express.static(path.join(process.cwd(), 'dist')))
 
-// Для POST/PUT (если понадобится)
+// Для POST/PUT
 app.use(express.json())
 
-// Проксируем все запросы /api → внешний API через proxy.js
+// Любые запросы к /api/* проксируем
 app.use('/api', proxy)
-
-app.use(express.static(path.join(process.cwd(), 'dist')))
 
 // SPA fallback: все остальные маршруты → index.html
 app.get('*', (req, res) => {

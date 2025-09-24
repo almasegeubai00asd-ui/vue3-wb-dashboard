@@ -1,5 +1,5 @@
-import { ref, computed } from 'vue'
-import { fetchEndpoint } from '../api/client'
+import { ref, computed } from "vue"
+import { fetchEndpoint } from "@/services/api"
 
 export function useTable(endpoint, defaultLimit = 10) {
   const rows = ref([])
@@ -12,7 +12,7 @@ export function useTable(endpoint, defaultLimit = 10) {
   async function load() {
     loading.value = true
     try {
-      const today = new Date().toISOString().split('T')[0]
+      const today = new Date().toISOString().split("T")[0]
 
       const params = {
         page: page.value,
@@ -37,7 +37,7 @@ export function useTable(endpoint, defaultLimit = 10) {
         total.value = data.total ?? rows.value.length
       }
     } catch (err) {
-      console.error('[useTable] Error loading table:', err)
+      console.error("[useTable] Error loading table:", err)
       rows.value = []
       total.value = 0
     } finally {
@@ -66,5 +66,16 @@ export function useTable(endpoint, defaultLimit = 10) {
     return load()
   }
 
-  return { rows, total, page, limit, pages, loading, load, setPage, setFilters, setLimit }
+  return {
+    rows,
+    total,
+    page,
+    limit,
+    pages,
+    loading,
+    load,
+    setPage,
+    setFilters,
+    setLimit
+  }
 }

@@ -1,9 +1,12 @@
 services:
   - type: web
     name: vue3-wb-dashboard
-    env: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    env: node
+    buildCommand: npm run build
+    startCommand: npm run preview
+    plan: free
     envVars:
-      - key: NODE_VERSION
-        value: 22
+      - key: VITE_API_BASE
+        value: http://109.73.206.144:6969
+      - key: VITE_API_KEY
+        value: E6kUTYrYwZq2tN4QEtyzsbEBk3ie

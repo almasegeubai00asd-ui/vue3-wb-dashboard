@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "start": "node server.js",
-    "preview": "vite preview"
+    "preview": "vite preview --port 10000 --host 0.0.0.0"
   },
   "engines": {
     "node": "20.x"

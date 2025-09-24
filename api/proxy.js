@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const router = express.Router()
 
-const BASE_URL = process.env.BACKEND_URL || 'http://109.73.206.144:6969'
+const BASE_URL = process.env.BACKEND_URL || 'https://109.73.206.144:6969'
 const API_KEY = process.env.VITE_API_KEY || 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie'
 
 router.get('/*', async (req, res) => {

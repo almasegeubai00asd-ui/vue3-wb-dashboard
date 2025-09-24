@@ -11,9 +11,9 @@ app.use(express.static(path.join(process.cwd(), 'dist')))
 app.use('/api', proxyRouter)
 
 // Все остальное отдаём фронтенду
-app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'dist/index.html'))
-})
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server started')

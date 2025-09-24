@@ -1,20 +1,32 @@
-import express from 'express'
-import path from 'path'
-import proxyRouter from './proxy.js'
+import express from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const app = express()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Фронтенд статика
-app.use(express.static(path.join(process.cwd(), 'dist')))
+const app = express();
 
-// Прокси для API
-app.use('/api', proxyRouter)
+// Проксируем все /api запросы
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: "http://109.73.206.144:6969",
+    changeOrigin: true,
+    secure: false,
+  })
+);
 
-// Все остальное отдаём фронтенду
+// Раздаём статические файлы из dist
+app.use(express.static(path.join(__dirname, "dist")));
+
+// Для Vue SPA — всегда index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Server started')
-})
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server started on port ${PORT}`);
+});
